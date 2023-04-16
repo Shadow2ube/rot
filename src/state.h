@@ -10,7 +10,7 @@ enum class State {
   kill = -1,   // stop the program
   idle = 0,    // do nothing
   print = 1,   // print commands
-  system = 2,  // execute commands
+  exec = 2,  // execute commands
 };
 
 enum class OS {

@@ -14,7 +14,7 @@ using namespace std::this_thread;     // sleep_for, sleep_until
 using namespace std::chrono_literals; // ns, us, ms, s, h, etc.
 using std::chrono::system_clock;
 
-// set the operating system of the device based on the compilation
+// set the operating exec of the device based on the compilation
 #ifdef _WIN32
 const OS os = OS::WINDOWS;
 #endif
@@ -28,9 +28,6 @@ const Os os = OS::MACOS;
 const string server_addr = "http://localhost:8080";
 
 auto handle_state(json) -> void;
-
-auto print(json) -> void;
-auto exec(json, bool = true) -> void;
 
 auto main() -> int {
   httplib::Client cli(server_addr);
@@ -65,19 +62,7 @@ auto handle_state(json data) -> void {
       break;
     case State::print:print(data["data"]);
       break;
-    case State::system:exec(data["data"], false);
+    case State::exec:exec(data["data"], false);
       break;
-  }
-}
-
-auto print(json data) -> void {
-  for (auto const &[_, i] : data.items()) {
-    cout << i << endl;
-  }
-}
-
-auto exec(json data, bool blocking) -> void {
-  for (auto const &[_, i] : data.items()) {
-    system((i.get<string>() + (blocking ? "" : "&")).data());
   }
 }

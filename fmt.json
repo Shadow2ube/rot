@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/product.schema.json",
+  "title": "Data",
+  "description": "A communication between client and serve",
+  "type": "object",
+  "properties": {
+    "id": {
+      "description": "The ID of the client, in snowflake form",
+      "type": "string"
+    },
+    "os": {
+      "description": "The identifier of the OS",
+      "type": "integer"
+    },
+    "new_state": {
+      "description": "The new state, only for server -> client communication",
+      "type": "integer"
+    },
+    "message": {
+      "description": "A message",
+      "type": "string"
+    },
+    "data": {
+      "description": "The data, in regard to new_state",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [ "id", "os" ]
+}

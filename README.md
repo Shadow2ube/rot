@@ -8,9 +8,9 @@
 
 ### 1. Why
 ROT is a part of a grade 12 computer science project my friend and I are working
-on. The whole point of the program is to allow for remote access to a system 
+on. The whole point of the program is to allow for remote access to a exec 
 from a REST client without needing to go through the hassle of setting up port 
-forwarding. the whole system runs on REST because we couldn't be bothered with
+forwarding. the whole exec runs on REST because we couldn't be bothered with
 a custom TCP protocol
 
 ### 2. How does it work?
