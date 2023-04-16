@@ -3,6 +3,7 @@
 //
 
 #include <string>
+//#include "http-client.h" // a smaller version of the http header -> WIP
 #include "../lib/http.h"
 #include "../lib/json.hpp"
 #include "../state.h"
@@ -41,7 +42,6 @@ auto main() -> int {
   for (;;) { // infinite loop
     info["time"] = time(nullptr);
     auto res = cli.Post("/opt", info.dump(), "application/json");
-
     // parse the response into a usable format
     json response = json::parse(res->body);
 
