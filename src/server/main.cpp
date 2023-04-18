@@ -18,7 +18,7 @@ auto main() -> int {
 
   svr.Post("/opt", [&queue, &clients](auto &req, auto &res) {
     auto j = json::parse(req.body);
-    clients[j["id"]] = j["time"];
+    clients[j["id"]] = {j.at("time"), j};
     if (queue[j["id"]].empty()) {
       res.set_content(R"({"new_state": 0, "message":"no tasks"})", "application/json");
       return;
@@ -55,8 +55,12 @@ auto main() -> int {
   });
 
   svr.set_logger([](auto req, auto res) {
-    cout << "path: " << req.path << "\treq: " << req.body << "\tres: " << res.body << endl;
+    cout << "Method: " << req.method << "\tpath: " << req.path << "\treq: " << req.body << "\tres: " << res.body <<
+         endl;
+  });
+  svr.set_error_handler([](auto &req, auto &res) {
+    res.set_content(R"({"message":"there was an error","new_state": 0})", "application/json");
   });
 
-  svr.listen("0.0.0.0", 8080);
+  svr.listen("10.21.205.159", 8080);
 }

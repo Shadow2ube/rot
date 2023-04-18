@@ -25,7 +25,7 @@ const OS os = OS::UNIX;
 const Os os = OS::MACOS;
 #endif
 
-const string server_addr = "http://localhost:8080";
+const string server_addr = "http://10.21.205.159:8080";
 
 auto handle_state(json) -> void;
 
@@ -38,6 +38,7 @@ auto main() -> int {
 
   for (;;) { // infinite loop
     info["time"] = time(nullptr);
+//    auto res = cli.Post("/opt", info.dump(), "application/json");
     auto res = cli.Post("/opt", info.dump(), "application/json");
     // parse the response into a usable format
     json response = json::parse(res->body);
