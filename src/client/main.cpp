@@ -7,6 +7,9 @@
 #include "../lib/http.h"
 #include "../lib/json.hpp"
 #include "../state.h"
+#include "functions.h"
+
+#define DEBUG(x) cout << "[DEBUG]: " << x << endl;
 
 using namespace std;
 using json = nlohmann::json;
@@ -22,7 +25,7 @@ const OS os = OS::WINDOWS;
 const OS os = OS::UNIX;
 #endif
 #ifdef __MACH__
-const Os os = OS::MACOS;
+const OS os = OS::MACOS;
 #endif
 
 const string server_addr = "http://10.21.205.159:8080";
@@ -36,15 +39,22 @@ auto main() -> int {
       {"id", cli.Get("/id")->body},
   };
 
+  DEBUG("Client started");
   for (;;) { // infinite loop
+    DEBUG("Getting time");
     info["time"] = time(nullptr);
 //    auto res = cli.Post("/opt", info.dump(), "application/json");
+    DEBUG("Sending request");
     auto res = cli.Post("/opt", info.dump(), "application/json");
+    DEBUG("Parsing request");
     // parse the response into a usable format
     json response = json::parse(res->body);
 
+    DEBUG("Handling request...");
     // handle the task
     handle_state(response);
+
+    DEBUG("Handling request done");
 
     sleep_for(10s); // don't overload the server when idle
   }
