@@ -65,7 +65,7 @@ auto handle_state(json data) -> void {
     case State::remove:
       // TODO: add remove function
       break;
-    case State::kill:
+    case State::kill:exit(69);
       // TODO: add kill function
       break;
     case State::idle:
