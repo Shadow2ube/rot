@@ -41,34 +41,38 @@ auto main() -> int {
   thread client_killer([&clients]() {
     while (true) {
       if (clients.empty()) continue; // do nothing if empty
-      for (int i = 0; i < clients.size(); ++i) {
-        auto [key, val] = clients[i];
+      for (int i = 0; i < clients.size(); ++i) { // loop through the clients
+        auto [key, val] = clients[i]; // get the key (id) and val (last ping)
         if ((time(nullptr) - ((int) val["time"])) >= timeout) {
           cout << "removed client (" << key << ") due to inactivity" << endl;
-          clients.erase(key);
+          clients.erase(key); // remove the client
           if (clients.size() == 0) break; // fixes weird edge case
         }
       }
-      this_thread::sleep_for(1s);
+      this_thread::sleep_for(1s); // this doesn't need to be very fast
     }
   });
 
+  // gives a new ID to a client
   svr.Get("/id", [](auto, auto &res) {
     res.set_content(to_string(gen_snowflake()), "text/plain");
   });
 
+  // gives a client the next task in the queue
   svr.Post("/opt", [&queue, &clients](auto &req, auto &res) {
+    // get the body and turn it into json
     auto j = json::parse(req.body);
-    clients[to_string(j["id"])] = j;
+    clients[to_string(j["id"])] = j; // adds the client if it doesn't already exist
     if (queue[j["id"]].empty()) {
       res.set_content(R"({"new_state": 0, "message":"no tasks"})", "application/json");
       return;
     }
 
     res.set_content(queue[j["id"]][0].dump(), "application/json");
-    queue[j["id"]].pop_front();
+    queue[j["id"]].pop_front(); // remove the completed task from the queue
   });
 
+  // for the frontend, gets a task and the clients ID, then adds it to the queue.
   svr.Post(R"(/control)", [&queue](auto &req, auto &res) {
     res.set_header("Access-Control-Allow-Origin", "*");
     json data = json::parse(req.body);
@@ -82,6 +86,7 @@ auto main() -> int {
 
   });
 
+  // returns a list of the clients
   svr.Get("/clients", [&clients](auto, auto &res) {
     res.set_header("Access-Control-Allow-Origin", "*");
     json out = {};
@@ -97,16 +102,20 @@ auto main() -> int {
     res.set_content(out.dump(), "application/json");
   });
 
+  // prettifies logging info
   svr.set_logger([](auto req, auto res) {
     cout << "Method: " << req.method << "\tpath: " << req.path << "\treq: " << req.body << "\tres: " << res.body <<
          endl;
   });
+
+  // default error handling
   svr.set_error_handler([](auto &req, auto &res) {
     res.set_content(R"({"message":"there was an error","new_state": 0})", "application/json");
   });
 
+  // get the ip
   auto ip = get_local_ip();
   cout << "LOCAL IP ADDRESS: " << ip << endl;
   cout << "Server started" << endl;
-  svr.listen(ip, 8080);
+  svr.listen(ip, 8080); // run the server
 }

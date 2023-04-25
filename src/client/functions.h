@@ -21,6 +21,11 @@ auto print(json data) -> void {
   }
 }
 
+/**
+ * @brief Runs a series of commands in the clients default command processor
+ * @param data json - the data to be run, following fmt.json
+ * @param blocking bool - whether to run the commands one after another
+ */
 auto exec(json data, bool blocking) -> void {
   for (auto const &[_, i] : data.items()) {
     system((i.get<string>() + (blocking ? "" : "&")).data());

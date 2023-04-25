@@ -27,13 +27,19 @@ const OS os = OS::UNIX;
 const OS os = OS::MACOS;
 #endif
 
+// Set the ip of the server
 const string server_addr = "http://10.21.205.159:8080";
 //const string server_addr = "http://10.0.0.99:8080";
 
-auto handle_state(json) -> void;
+/**
+ * @brief Handles the new state given
+ * @param data json - the required data, following fmt.json
+ */
+auto handle_state(json data) -> void;
 
 auto main() -> int {
   httplib::Client cli(server_addr);
+  // The default info
   json info = {
       {"os", os},
       {"id", cli.Get("/id")->body},
@@ -66,8 +72,6 @@ auto handle_state(json data) -> void {
       // TODO: add remove function
       break;
     case State::kill:exit(69);
-      // TODO: add kill function
-      break;
     case State::idle:
       // don't do anything
       break;
