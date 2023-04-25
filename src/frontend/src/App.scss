@@ -1,0 +1,148 @@
+$fg1: #ffffff;
+$bg1: #131313;
+$hl1: #306aff;
+$bg2: #1f1f1f;
+
+.App {
+  //width: 100%;
+  height: 100%;
+  display: grid;
+  justify-content: stretch;
+  grid-template-columns: 49% 49%;
+  grid-template-rows: 15% 10% 75%;
+  grid-column-gap: 2%;
+  margin-left: 2px;
+  margin-right: 2px;
+
+  //* {
+  //  margin: 3px;
+  //}
+}
+
+.navbar {
+  grid-column: 1 / 3;
+  background: $bg2;
+  display: flex;
+  flex-flow: row;
+  align-content: center;
+
+  * {
+    align-self: center;
+  }
+
+  .nav-left {
+    h3 {
+      font-size: 2rem;
+    }
+  }
+
+  .nav-fill {
+    flex: 1 1 auto;
+  }
+
+  .nav-right {
+
+  }
+
+}
+
+.clientList {
+  grid-row: 3 / 4;
+  height: 100%;
+  overflow: scroll;
+
+  .client {
+    background: $bg1;
+
+    &:hover {
+      background: $hl1;
+    }
+  }
+
+  table {
+    height: 5%;
+    width: 100%;
+    border: 1px solid #979797;
+    border-collapse: collapse;
+
+    th, td {
+      padding: 8px;
+      text-align: left;
+    }
+
+    th {
+      border-bottom: 1px solid #ddd;
+    }
+
+    td {
+      border-bottom: 1px solid #b2b2b2;
+    }
+  }
+}
+
+.clientOptions {
+  display: flex;
+  flex-flow: column;
+
+  .sendTo {
+    background: $bg2;
+    border: 1px solid $fg1;
+    height: 2rem;
+
+    &:hover {
+      background: $hl1;
+    }
+  }
+
+  .stateEditorText {
+    flex: 1 1 auto;
+    padding: 3px;
+    resize: none;
+    width: 99.1%;
+    border: 1px solid $fg1;
+    background: $bg1;
+    font-size: 1.2rem;
+    height: 100%;
+    overflow: auto;
+  }
+
+  .selector-container {
+    .selector__control {
+      border-radius: 0;
+      background: $bg1;
+
+      * {
+        color: $fg1;
+      }
+
+      &:hover {
+        border: 1px solid $hl1;
+      }
+    }
+
+
+    .selector__menu {
+      background: $bg1;
+      border-radius: 0;
+      color: white;
+
+      .selector__menu-list {
+        .selector__option {
+          &:hover {
+            background: $hl1;
+          }
+
+          background: $bg1;
+        }
+      }
+    }
+  }
+}
+
+
+//.clientSelect {
+//  border-radius: 0;
+//  background: #000000;
+//  border: 1px solid #979797;
+//  font-size: 1em;
+//}

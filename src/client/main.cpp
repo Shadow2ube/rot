@@ -8,8 +8,7 @@
 #include "../lib/json.hpp"
 #include "../state.h"
 #include "functions.h"
-
-#define DEBUG(x) cout << "[DEBUG]: " << x << endl;
+#include "../printers.h"
 
 using namespace std;
 using json = nlohmann::json;
@@ -29,6 +28,7 @@ const OS os = OS::MACOS;
 #endif
 
 const string server_addr = "http://10.21.205.159:8080";
+//const string server_addr = "http://10.0.0.99:8080";
 
 auto handle_state(json) -> void;
 
