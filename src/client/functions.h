@@ -7,6 +7,7 @@
 
 #include <iostream>
 #include "../lib/json.hpp"
+#include "../printers.h"
 
 using namespace std;
 using json = nlohmann::json;
@@ -26,10 +27,16 @@ auto print(json data) -> void {
  * @param data json - the data to be run, following fmt.json
  * @param blocking bool - whether to run the commands one after another
  */
-auto exec(json data, bool blocking) -> void {
+auto exec(json data) -> void {
   for (auto const &[_, i] : data.items()) {
-    system((i.get<string>() + (blocking ? "" : "&")).data());
+    system((i.get<string>() + (data["settings"]["blocking"] ? "" : "&")).data());
   }
+}
+
+auto update(httplib::Client &cli) {
+  auto res = cli.Get("/content/rot_client");
+  DEBUG(res);
+
 }
 
 #endif //ROT_SRC_CLIENT_FUNCTIONS_H_

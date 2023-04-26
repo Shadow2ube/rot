@@ -102,10 +102,16 @@ auto main() -> int {
     res.set_content(out.dump(), "application/json");
   });
 
+  // add a spot for a client to download a new client
+  svr.set_mount_point("/content", "/home/christian/Documents/school/gr12/s2p1-compSci/rot/content");
+
   // prettifies logging info
   svr.set_logger([](auto req, auto res) {
-    cout << "Method: " << req.method << "\tpath: " << req.path << "\treq: " << req.body << "\tres: " << res.body <<
-         endl;
+    cout << "Method: " << req.method
+         << "\tpath: " << req.path
+         << "\treq: " << req.body
+         << "\tres: " << res.body
+         << endl;
   });
 
   // default error handling
