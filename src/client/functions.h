@@ -35,7 +35,7 @@ auto exec(json data) -> void {
 
 auto update(httplib::Client &cli) {
   auto res = cli.Get("/content/rot_client");
-  DEBUG(res);
+  DEBUG(res->body);
 
 }
 
