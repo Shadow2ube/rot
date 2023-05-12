@@ -3,11 +3,12 @@
 //
 
 #include <string>
-#include "../lib/http.h"
+#include "../lib/http.hpp"
 #include "../lib/json.hpp"
 #include "../state.h"
 #include "functions.h"
 #include "../printers.h"
+#include "../config.h"
 
 using namespace std;
 using json = nlohmann::json;
@@ -30,14 +31,17 @@ const OS os = OS::MACOS;
  * @brief Handles the new state given
  * @param data json - the required data, following fmt.json
  * @param cli httplib::Client - a client instance of the server
+ * @param settings the settings, modifiable
  */
-auto handle_state(json data, httplib::Client &cli) -> void;
+auto handle_state(json data, httplib::Client &cli, json&settings) -> void;
 
-auto main() -> int {
-  const string server_addr = "http://10.21.205.159:8080";
+auto main(int argc, char **argv) -> int {
   const string version = "0.0.1";
-
-  httplib::Client cli(server_addr);
+  auto server = argc != 1 ? argv[1] : server_address;
+  json settings = {
+      {"wait_duration", 10},
+  };
+  httplib::Client cli(server);
   // The default info
   json info = {
       {"version", version},
@@ -57,18 +61,19 @@ auto main() -> int {
 
     DEBUG("Handling request...");
     // handle the task
-    handle_state(response, cli);
+    handle_state(response, cli, settings);
 
     DEBUG("Handling request done");
 
-    sleep_for(10s); // don't overload the server when idle
+    sleep_for(chrono::seconds(settings["wait_duration"].get<int>())); // don't overload the server when idle
+
   }
 }
 
-auto handle_state(json data, httplib::Client &cli) -> void {
+auto handle_state(json data, httplib::Client &cli, json &settings) -> void {
   switch (State(data["new_state"])) {
     case State::remove:
-      // TODO: add remove function
+      // TODO: add remove function to clean the client
       break;
     case State::kill:exit(69);
     case State::idle: // don't do anything
@@ -79,5 +84,6 @@ auto handle_state(json data, httplib::Client &cli) -> void {
       break;
     case State::update:update(cli);
       break;
+    case State::settings:set_settings(data["data"], settings);
   }
 }

@@ -34,9 +34,13 @@ auto exec(json data) -> void {
 }
 
 auto update(httplib::Client &cli) {
-  auto res = cli.Get("/content/rot_client");
+  auto res = cli.Get("/content/original");
   DEBUG(res->body);
 
+}
+
+auto set_settings(json data, json &settings) {
+  settings["wait_duration"] = data["wait_duration"];
 }
 
 #endif //ROT_SRC_CLIENT_FUNCTIONS_H_

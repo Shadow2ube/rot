@@ -6,8 +6,13 @@
 #define ROT_SRC_PRINTERS_H_
 
 /**
- * @brief A nice printer for debug info
+ * @brief A nice little printer for debug info
+ * @param in any cout printable object
  */
-#define DEBUG(x) cout << "[DEBUG]: " << x << endl;
+template<typename T>
+inline void DEBUG(T in) {
+  using namespace std;
+  cout << "[DEBUG]: " << in << endl;
+}
 
 #endif //ROT_SRC_PRINTERS_H_
