@@ -431,13 +431,13 @@ struct Request {
   ContentReceiverWithProgress content_receiver;
   Progress progress;
 
-  [[nodiscard]] bool has_header(const std::string &key) const;
-  [[nodiscard]] std::string get_header_value(const std::string &key, size_t id = 0) const;
+  bool has_header(const std::string &key) const;
+  std::string get_header_value(const std::string &key, size_t id = 0) const;
   template<typename T>
   T get_header_value(const std::string &key, size_t id = 0) const;
   void set_header(const std::string &key, const std::string &val);
 
-  [[nodiscard]] bool is_multipart_form_data() const;
+  bool is_multipart_form_data() const;
 
   // private members...
   size_t redirect_count_ = CPPHTTPLIB_REDIRECT_MAX_COUNT;
@@ -455,11 +455,11 @@ struct Response {
   std::string body;
   std::string location; // Redirect location
 
-  [[nodiscard]] bool has_header(const std::string &key) const;
-  [[nodiscard]] std::string get_header_value(const std::string &key, size_t id = 0) const;
+  bool has_header(const std::string &key) const;
+  std::string get_header_value(const std::string &key, size_t id = 0) const;
   template<typename T>
   T get_header_value(const std::string &key, size_t id = 0) const;
-  [[nodiscard]] size_t get_header_value_count(const std::string &key) const;
+  size_t get_header_value_count(const std::string &key) const;
   void set_header(const std::string &key, const std::string &val);
 
   void set_redirect(const std::string &url, int status = 302);
@@ -501,14 +501,14 @@ class Stream {
  public:
   virtual ~Stream() = default;
 
-  [[nodiscard]] virtual bool is_readable() const = 0;
-  [[nodiscard]] virtual bool is_writable() const = 0;
+  virtual bool is_readable() const = 0;
+  virtual bool is_writable() const = 0;
 
   virtual ssize_t read(char *ptr, size_t size) = 0;
   virtual ssize_t write(const char *ptr, size_t size) = 0;
   virtual void get_remote_ip_and_port(std::string &ip, int &port) const = 0;
   virtual void get_local_ip_and_port(std::string &ip, int &port) const = 0;
-  [[nodiscard]] virtual socket_t socket() const = 0;
+  virtual socket_t socket() const = 0;
 
   template<typename... Args>
   ssize_t write_format(const char *fmt, const Args &...args);
@@ -635,7 +635,7 @@ class Result {
   explicit operator bool() const { return res_ != nullptr; }
   bool operator==(std::nullptr_t) const { return res_ == nullptr; }
   bool operator!=(std::nullptr_t) const { return res_ != nullptr; }
-  [[nodiscard]] const Response &value() const { return *res_; }
+  const Response &value() const { return *res_; }
   Response &value() { return *res_; }
   const Response &operator*() const { return *res_; }
   Response &operator*() { return *res_; }
@@ -643,15 +643,15 @@ class Result {
   Response *operator->() { return res_.get(); }
 
   // Error
-  [[nodiscard]] Error error() const { return err_; }
+  Error error() const { return err_; }
 
   // Request Headers
-  [[maybe_unused]] [[nodiscard]] bool has_request_header(const std::string &key) const;
-  [[maybe_unused]] [[nodiscard]] std::string get_request_header_value(const std::string &key,
-                                                                      size_t id = 0) const;
+  bool has_request_header(const std::string &key) const;
+  std::string get_request_header_value(const std::string &key,
+                                       size_t id = 0) const;
   template<typename T>
-  [[maybe_unused]] T get_request_header_value(const std::string &key, size_t id = 0) const;
-  [[nodiscard]] size_t get_request_header_value_count(const std::string &key) const;
+  T get_request_header_value(const std::string &key, size_t id = 0) const;
+  size_t get_request_header_value_count(const std::string &key) const;
 
  private:
   std::unique_ptr<Response> res_;
@@ -760,7 +760,7 @@ class ClientImpl {
   struct Socket {
     socket_t sock = INVALID_SOCKET;
 
-    [[nodiscard]] bool is_open() const { return sock != INVALID_SOCKET; }
+    bool is_open() const { return sock != INVALID_SOCKET; }
   };
 
   virtual bool create_and_connect_socket(Socket &socket, Error &error);
@@ -896,7 +896,7 @@ class Client {
 
   ~Client();
 
-  [[nodiscard]] bool is_valid() const;
+  bool is_valid() const;
 
   Result Get(const std::string &path);
   Result Get(const std::string &path, const Headers &headers);
@@ -933,13 +933,13 @@ class Client {
   bool send(Request &req, Response &res, Error &error);
   Result send(const Request &req);
 
-  [[nodiscard]] size_t is_socket_open() const;
+  size_t is_socket_open() const;
 
-  [[nodiscard]] socket_t socket() const;
+  socket_t socket() const;
 
   void stop();
 
-  [[maybe_unused]] void set_hostname_addr_map(std::map<std::string, std::string> addr_map);
+  void set_hostname_addr_map(std::map<std::string, std::string> addr_map);
 
   void set_default_headers(Headers headers);
 
@@ -1099,8 +1099,8 @@ inline std::ostream &operator<<(std::ostream &os, const Error &obj) {
 }
 
 template<typename T>
-[[maybe_unused]] [[maybe_unused]] inline T Result::get_request_header_value(const std::string &key,
-                                                                            size_t id) const {
+inline T Result::get_request_header_value(const std::string &key,
+                                          size_t id) const {
   return detail::get_header_value<T>(request_headers_, key, id, 0);
 }
 
@@ -1214,15 +1214,15 @@ class BufferStream : public Stream {
   BufferStream() = default;
   ~BufferStream() override = default;
 
-  [[nodiscard]] bool is_readable() const override;
-  [[nodiscard]] bool is_writable() const override;
+  bool is_readable() const override;
+  bool is_writable() const override;
   ssize_t read(char *ptr, size_t size) override;
   ssize_t write(const char *ptr, size_t size) override;
   void get_remote_ip_and_port(std::string &ip, int &port) const override;
   void get_local_ip_and_port(std::string &ip, int &port) const override;
-  [[nodiscard]] socket_t socket() const override;
+  socket_t socket() const override;
 
-  [[nodiscard]] const std::string &get_buffer() const;
+  const std::string &get_buffer() const;
 
  private:
   std::string buffer;
@@ -4058,12 +4058,12 @@ inline void Response::set_chunked_content_provider(
 }
 
 // Result implementation
-[[maybe_unused]] [[maybe_unused]] inline bool Result::has_request_header(const std::string &key) const {
+inline bool Result::has_request_header(const std::string &key) const {
   return request_headers_.find(key) != request_headers_.end();
 }
 
-[[maybe_unused]] [[maybe_unused]] inline std::string Result::get_request_header_value(const std::string &key,
-                                                                                      size_t id) const {
+inline std::string Result::get_request_header_value(const std::string &key,
+                                                    size_t id) const {
   return detail::get_header_value(request_headers_, key, id, "");
 }
 
@@ -5269,7 +5269,7 @@ inline socket_t Client::socket() const { return cli_->socket(); }
 
 inline void Client::stop() { cli_->stop(); }
 
-[[maybe_unused]] [[maybe_unused]] inline void
+inline void
 Client::set_hostname_addr_map(std::map<std::string, std::string> addr_map) {
   cli_->set_hostname_addr_map(std::move(addr_map));
 }
