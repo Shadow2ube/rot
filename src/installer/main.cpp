@@ -1,4 +1,5 @@
 #include <string>
+#include <filesystem>
 #include "../lib/http-installer.hpp"
 #include "../config.h"
 
@@ -27,14 +28,18 @@ auto main() -> int {
   const string dirname = "/.rot";
   const string path = getenv("HOME") + dirname;
   cout << path << endl;
+  try {
+    filesystem::remove_all(path);
+  } catch (exception &ignored) {}
+
 #ifdef _WIN32
   mkdir(path.c_str());
 #else
   mkdir(path.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
 #endif
 
-  auto res = cli.Get("/content/original", [](uint64_t len, uint64_t total) {
-    printf("%llu / %llu bytes => %d%% complete\n", len, total, (int) (len * 100 / total));
+  auto res = cli.Get("/content/rot_client", [](uint64_t len, uint64_t total) {
+    printf("%lu / %lu bytes => %d%% complete\n", len, total, (int) (len * 100 / total));
     return true; // return 'false' if you want to cancel the request.
   });
 

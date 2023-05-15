@@ -12,6 +12,14 @@
 using namespace std;
 using json = nlohmann::json;
 
+void remove() {
+  filesystem::current_path(filesystem::current_path() / "..");
+  filesystem::path rmd = filesystem::current_path() / ".rot";
+  cout << "Removing self from " << rmd.string() << "\nBye bye!" << endl;
+  filesystem::remove_all(rmd);
+  exit(420);
+}
+
 /**
  * @brief Prints out a series of strings, separated by new lines
  * @param data json - the data required, following fmt.json

@@ -29,13 +29,6 @@ struct Server {
 
 };
 
-Server *Server::instance_ = nullptr;
 
-Server *Server::get() {
-  if (instance_ == nullptr) {
-    instance_ = new Server();
-  }
-  return instance_;
-}
 
 #endif //ROT_SRC_SERVER_SERVER_H_
