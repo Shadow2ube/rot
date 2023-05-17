@@ -7,7 +7,8 @@
 
 #include <string>
 
-//const std::string server_address = "https://rot.unmined.ca:8080";
-const std::string server_address = "http://10.21.205.159:8080";
+const std::string server_address = "http://99.234.241.15:6969";
+
+static const int server_port = 6969;
 
 #endif //ROT_SRC_CONFIG_H_

@@ -70,6 +70,12 @@ auto main(int argc, char **argv) -> int {
   }
 }
 
+/**
+ * @brief Handles to command sent by the server
+ * @param data The data sent by the server
+ * @param cli The client object
+ * @param settings The settings object
+ */
 auto handle_state(json data, httplib::Client &cli, json &settings) -> void {
   switch (State(data["new_state"])) {
     case State::remove:remove();
@@ -79,7 +85,7 @@ auto handle_state(json data, httplib::Client &cli, json &settings) -> void {
       break;
     case State::print:print(data["data"]);
       break;
-    case State::exec:exec(data["data"]);
+    case State::exec:exec(data["data"], data["settings"]);
       break;
     case State::update:update(cli);
       break;

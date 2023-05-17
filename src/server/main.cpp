@@ -6,6 +6,7 @@
 #include "../printers.h"
 #include "endpoints.h"
 #include "server.h"
+#include "../config.h"
 
 // how long should we wait for a client to ping us
 #define timeout 20 // seconds
@@ -60,7 +61,7 @@ auto main(int argc, char **argv) -> int {
   server->svr.Get("/clients", endpoints::get_clients);   // list all clients
 
   // add a spot for a client to download a new client
-  server->svr.set_mount_point("/content", "/home/christian/Documents/school/gr12/s2p1-compSci/rot/content");
+  server->svr.set_mount_point("/content", "/home/christian/rot/content");
 
   // prettifies logging info
   server->svr.set_logger([](auto req, auto res) {
@@ -80,6 +81,6 @@ auto main(int argc, char **argv) -> int {
   auto ip = get_local_ip();
   if (argc != 1) ip = argv[1];
   cout << "Server started on " << ip << endl;
-  server->svr.listen(ip, 8080); // run the server
+  server->svr.listen(ip, server_port); // run the server
   return -1;
 }

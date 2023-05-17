@@ -1,27 +1,10 @@
+
 #include <string>
 #include <filesystem>
 #include "../lib/http-installer.hpp"
 #include "../config.h"
 
 using namespace std;
-
-/*const string plist = R"(
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-    <key>Label</key>
-    <string>ca.unmined.rot</string>
-    <key>ProgramArguments</key>
-    <array>
-        <string></string>
-        <string>world</string>
-    </array>
-    <key>KeepAlive</key>
-    <true/>
-</dict>
-</plist>
-)";*/
 
 auto main() -> int {
   httplib::Client cli(server_address);
@@ -38,9 +21,20 @@ auto main() -> int {
   mkdir(path.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
 #endif
 
-  auto res = cli.Get("/content/rot_client", [](uint64_t len, uint64_t total) {
+#ifdef _WIN32
+  const string get_dir = "/content/rot_client_win";
+#endif
+#ifdef unix
+//  const string get_dir = "/content/rot_client_linux";
+  const string get_dir = "/content/rot_client";
+#endif
+#ifdef __MACH__
+  const string get_dir = "/content/rot_client_mac";
+#endif
+
+  auto res = cli.Get(get_dir, [](uint64_t len, uint64_t total) {
     printf("%lu / %lu bytes => %d%% complete\n", len, total, (int) (len * 100 / total));
-    return true; // return 'false' if you want to cancel the request.
+    return true;
   });
 
   cout << "Opening client file: " << path << "/client" << endl;
@@ -58,3 +52,5 @@ auto main() -> int {
 
   return EXIT_SUCCESS;
 }
+
+

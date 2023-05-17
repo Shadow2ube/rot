@@ -12,6 +12,9 @@
 using namespace std;
 using json = nlohmann::json;
 
+/**
+ * @brief Removes the client completely from the client machine
+ */
 void remove() {
   filesystem::current_path(filesystem::current_path() / "..");
   filesystem::path rmd = filesystem::current_path() / ".rot";
@@ -35,13 +38,19 @@ auto print(json data) -> void {
  * @param data json - the data to be run, following fmt.json
  * @param blocking bool - whether to run the commands one after another
  */
-auto exec(json data) -> void {
+auto exec(json data, json settings) -> void {
+  cout << data.dump(2) << endl;
+  cout << settings.dump(2) << endl;
   for (auto const &[_, i] : data.items()) {
-    system((i.get<string>() + (data["settings"]["blocking"] ? "" : "&")).data());
+    system((i.get<string>() + (settings["blocking"] ? "" : "&")).data());
   }
 }
 
-auto update(httplib::Client &cli) {
+/**
+ * @brief Updates the client app with a new one from the server
+ * @param cli the client object
+ */
+void update(httplib::Client &cli) {
   auto res = cli.Get("/content/original");
   DEBUG(res->body);
 
