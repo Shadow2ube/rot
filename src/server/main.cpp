@@ -61,7 +61,8 @@ auto main(int argc, char **argv) -> int {
   server->svr.Get("/clients", endpoints::get_clients);   // list all clients
 
   // add a spot for a client to download a new client
-  server->svr.set_mount_point("/content", "/home/christian/rot/content");
+//  server->svr.set_mount_point("/content", "/home/christian/rot/content");
+  server->svr.set_mount_point("/content", "/home/christian/Documents/school/gr12/s2p1-compSci/rot/content");
 
   // prettifies logging info
   server->svr.set_logger([](auto req, auto res) {

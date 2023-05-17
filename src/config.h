@@ -7,7 +7,8 @@
 
 #include <string>
 
-const std::string server_address = "http://99.234.241.15:6969";
+//const std::string server_address = "http://99.234.241.15:6969";
+const std::string server_address = "http://10.21.205.159:6969";
 
 static const int server_port = 6969;
 
